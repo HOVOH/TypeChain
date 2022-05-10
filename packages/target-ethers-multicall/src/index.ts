@@ -1,5 +1,5 @@
-import TypechainEthers from '@typechain/ethers-v5'
-import { FACTORY_POSTFIX } from '@typechain/ethers-v5/dist/common'
+import TypechainEthers from '@hovoh/typechain-ethers-v5'
+import { FACTORY_POSTFIX } from '@hovoh/typechain-ethers-v5/dist/common'
 import { join } from 'path'
 import { CodegenConfig, Contract, FileDescription } from 'typechain'
 

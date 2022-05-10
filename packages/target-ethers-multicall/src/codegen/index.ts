@@ -2,7 +2,17 @@ import {
   codegenCommonContractFactory,
   generateContractTypesBody,
   generateFactoryConstructor,
-  generateFactoryConstructorParamsAlias, } from '@typechain/ethers-v5/dist/codegen'
+  generateFactoryConstructorParamsAlias, } from '@hovoh/typechain-ethers-v5/dist/codegen'
+import {
+  EVENT_IMPORTS,
+} from '@hovoh/typechain-ethers-v5/dist/codegen/events'
+import {
+  codegenFunctions,
+  generateParamNames,
+} from '@hovoh/typechain-ethers-v5/dist/codegen/functions'
+import { reservedKeywords } from '@hovoh/typechain-ethers-v5/dist/codegen/reserved-keywords'
+import { generateInputTypes, generateOutputTypes } from '@hovoh/typechain-ethers-v5/dist/codegen/types'
+import { FACTORY_POSTFIX } from '@hovoh/typechain-ethers-v5/dist/common'
 import { values } from 'lodash'
 import {
   BytecodeWithLinkReferences,
@@ -11,17 +21,6 @@ import {
   createImportsForUsedIdentifiers,
   createImportTypeDeclaration,
 } from 'typechain'
-
-import { FACTORY_POSTFIX } from '@typechain/ethers-v5/dist/common'
-import {
-  EVENT_IMPORTS,
-} from '@typechain/ethers-v5/dist/codegen/events'
-import {
-  codegenFunctions,
-  generateParamNames,
-} from '@typechain/ethers-v5/dist/codegen/functions'
-import { reservedKeywords } from '@typechain/ethers-v5/dist/codegen/reserved-keywords'
-import { generateInputTypes, generateOutputTypes } from '@typechain/ethers-v5/dist/codegen/types'
 
 export function codegenContractTypings(contract: Contract, codegenConfig: CodegenConfig) {
   const ethersSource = generateContractTypesBody(contract, codegenConfig);
@@ -92,8 +91,7 @@ export function codegenContractFactory(
   bytecode?: BytecodeWithLinkReferences,
 ): string {
   const constructorArgs =
-    (contract.constructor[0] ? generateInputTypes(contract.constructor[0].inputs, { useStructs: true }) : '') +
-    `overrides?: ${
+    `${contract.constructor[0] ? generateInputTypes(contract.constructor[0].inputs, { useStructs: true }) : ''} overrides?: ${
       contract.constructor[0]?.stateMutability === 'payable'
         ? 'PayableOverrides & { from?: string | Promise<string> }'
         : 'Overrides & { from?: string | Promise<string> }'

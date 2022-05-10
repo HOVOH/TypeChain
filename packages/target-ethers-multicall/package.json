@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "@hovoh/ethers-multicall": "^0.1.0",
-    "@typechain/ethers-v5": "workspace:^10.0.0",
+    "@hovoh/typechain-ethers-v5": "workspace:^10.0.1",
     "lodash": "^4.17.15",
     "ts-essentials": "^7.0.1"
   }
