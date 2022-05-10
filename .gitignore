@@ -8,6 +8,7 @@ build
 contracts/compiled
 packages/target-truffle-v4-test/contracts
 packages/target-truffle-v5-test/contracts
+packages/target-ethers-multicall-test/types
 packages/typechain/README.md
 examples/web3-v1/types
 examples/truffle-v4/types
