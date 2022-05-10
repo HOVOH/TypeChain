@@ -31,10 +31,10 @@ const DEFAULT_OUT_PATH = './types/ethers-contracts/'
 export default class Ethers extends TypeChainTarget {
   name = 'Ethers'
 
-  private readonly allFiles: string[]
-  private readonly outDirAbs: string
-  private readonly contractsWithoutBytecode: Dictionary<{ abi: any; contract: Contract } | undefined> = {}
-  private readonly bytecodeCache: Dictionary<BytecodeWithLinkReferences | undefined> = {}
+  protected readonly allFiles: string[]
+  protected readonly outDirAbs: string
+  protected readonly contractsWithoutBytecode: Dictionary<{ abi: any; contract: Contract } | undefined> = {}
+  protected readonly bytecodeCache: Dictionary<BytecodeWithLinkReferences | undefined> = {}
 
   constructor(config: Config) {
     super(config)
@@ -120,16 +120,20 @@ export default class Ethers extends TypeChainTarget {
     }
   }
 
-  override afterRun(): FileDescription[] {
-    // For each contract that doesn't have bytecode (it's either abstract, or only ABI was provided)
-    // generate a simplified factory, that allows to interact with deployed contract instances.
-    const abstractFactoryFiles = Object.keys(this.contractsWithoutBytecode).map((contractName) => {
+  getAbstractFactoryFiles() {
+    return Object.keys(this.contractsWithoutBytecode).map((contractName) => {
       const { contract, abi } = this.contractsWithoutBytecode[contractName]!
       return {
         path: join(this.outDirAbs, 'factories', ...contract.path, `${contract.name}${FACTORY_POSTFIX}.ts`),
         contents: codegenAbstractContractFactory(contract, abi),
       }
     })
+  }
+
+  override afterRun(): FileDescription[] {
+    // For each contract that doesn't have bytecode (it's either abstract, or only ABI was provided)
+    // generate a simplified factory, that allows to interact with deployed contract instances.
+    const abstractFactoryFiles = this.getAbstractFactoryFiles();
 
     const common = {
       path: join(this.outDirAbs, 'common.ts'),

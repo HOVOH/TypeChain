@@ -19,9 +19,9 @@ export function typedAssert<T>(actual: T, expected: T): void {
   }
 
   if (isBigNumberObject(actual) && isBigNumberObject(expected)) {
-    const actualFiltered = omitBy(actual as any, (v, k) => k.startsWith('__'))
-    expect(mapValues(actualFiltered as any, (a) => a.toString())).toEqual(
-      mapValues(expected as any, (a) => a.toString()),
+    const actualFiltered = omitBy(actual as any, (v:any , k: any) => k.startsWith('__'))
+    expect(mapValues(actualFiltered as any, (a: any) => a.toString())).toEqual(
+      mapValues(expected as any, (a: any) => a.toString()),
     )
     return
   }

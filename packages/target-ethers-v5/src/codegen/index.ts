@@ -32,43 +32,42 @@ import { reservedKeywords } from './reserved-keywords'
 import { generateStructTypes } from './structs'
 import { generateInputTypes } from './types'
 
-export function codegenContractTypings(contract: Contract, codegenConfig: CodegenConfig) {
+export function generateContractTypesBody(contract: Contract, codegenConfig: CodegenConfig){
   const { alwaysGenerateOverloads } = codegenConfig
-
-  const source = `
+  return `
   ${generateStructTypes(values(contract.structs).map((v) => v[0]))}
 
   export interface ${contract.name}Interface extends utils.Interface {
     ${codegenConfig.discriminateTypes ? `contractName: '${contract.name}';\n` : ``}
     functions: {
       ${values(contract.functions)
-        .flatMap((v) => v.map(generateInterfaceFunctionDescription))
-        .join('\n')}
+    .flatMap((v) => v.map(generateInterfaceFunctionDescription))
+    .join('\n')}
     };
 
     ${generateGetFunction(
-      values(contract.functions).flatMap((v) =>
-        processDeclaration(v, alwaysGenerateOverloads, generateFunctionNameOrSignature),
-      ),
-    )}
+    values(contract.functions).flatMap((v) =>
+      processDeclaration(v, alwaysGenerateOverloads, generateFunctionNameOrSignature),
+    ),
+  )}
 
     ${values(contract.functions)
-      .flatMap((v) => processDeclaration(v, alwaysGenerateOverloads, generateEncodeFunctionDataOverload))
-      .join('\n')}
+    .flatMap((v) => processDeclaration(v, alwaysGenerateOverloads, generateEncodeFunctionDataOverload))
+    .join('\n')}
 
     ${values(contract.functions)
-      .flatMap((v) => processDeclaration(v, alwaysGenerateOverloads, generateDecodeFunctionResultOverload))
-      .join('\n')}
+    .flatMap((v) => processDeclaration(v, alwaysGenerateOverloads, generateDecodeFunctionResultOverload))
+    .join('\n')}
 
     events: {
       ${values(contract.events)
-        .flatMap((v) => v.map(generateInterfaceEventDescription))
-        .join('\n')}
+    .flatMap((v) => v.map(generateInterfaceEventDescription))
+    .join('\n')}
     };
 
     ${values(contract.events)
-      .flatMap((v) => processDeclaration(v, alwaysGenerateOverloads, generateGetEvent))
-      .join('\n')}
+    .flatMap((v) => processDeclaration(v, alwaysGenerateOverloads, generateGetEvent))
+    .join('\n')}
   }
 
   ${values(contract.events).map(generateEventTypeExports).join('\n')}
@@ -85,19 +84,19 @@ export function codegenContractTypings(contract: Contract, codegenConfig: Codege
 
     functions: {
       ${values(contract.functions)
-        .map(codegenFunctions.bind(null, { returnResultObject: true, codegenConfig }))
-        .join('\n')}
+    .map(codegenFunctions.bind(null, { returnResultObject: true, codegenConfig }))
+    .join('\n')}
     };
 
     ${values(contract.functions)
-      .filter((f) => !reservedKeywords.has(f[0].name))
-      .map(codegenFunctions.bind(null, { codegenConfig }))
-      .join('\n')}
+    .filter((f) => !reservedKeywords.has(f[0].name))
+    .map(codegenFunctions.bind(null, { codegenConfig }))
+    .join('\n')}
 
     callStatic: {
       ${values(contract.functions)
-        .map(codegenFunctions.bind(null, { isStaticCall: true, codegenConfig }))
-        .join('\n')}
+    .map(codegenFunctions.bind(null, { isStaticCall: true, codegenConfig }))
+    .join('\n')}
     };
 
     filters: {
@@ -106,16 +105,21 @@ export function codegenContractTypings(contract: Contract, codegenConfig: Codege
 
     estimateGas: {
       ${values(contract.functions)
-        .map(codegenFunctions.bind(null, { overrideOutput: 'Promise<BigNumber>', codegenConfig }))
-        .join('\n')}
+    .map(codegenFunctions.bind(null, { overrideOutput: 'Promise<BigNumber>', codegenConfig }))
+    .join('\n')}
     };
 
     populateTransaction: {
       ${values(contract.functions)
-        .map(codegenFunctions.bind(null, { overrideOutput: 'Promise<PopulatedTransaction>', codegenConfig }))
-        .join('\n')}
+    .map(codegenFunctions.bind(null, { overrideOutput: 'Promise<PopulatedTransaction>', codegenConfig }))
+    .join('\n')}
     };
   }`
+}
+
+export function codegenContractTypings(contract: Contract, codegenConfig: CodegenConfig) {
+
+  const source = generateContractTypesBody(contract, codegenConfig)
 
   const commonPath = contract.path.length
     ? `${new Array(contract.path.length).fill('..').join('/')}/common`
@@ -236,7 +240,7 @@ export function codegenAbstractContractFactory(contract: Contract, abi: any): st
   `
 }
 
-function codegenCommonContractFactory(contract: Contract, abi: any): { header: string; body: string } {
+export function codegenCommonContractFactory(contract: Contract, abi: any): { header: string; body: string } {
   const imports: Set<string> = new Set([contract.name, contract.name + 'Interface'])
 
   contract.constructor[0]?.inputs.forEach(({ type }) => {
@@ -269,7 +273,7 @@ function codegenCommonContractFactory(contract: Contract, abi: any): { header: s
   return { header, body }
 }
 
-function generateFactoryConstructor(
+export function generateFactoryConstructor(
   codegenConfig: CodegenConfig,
   contract: Contract,
   bytecode: BytecodeWithLinkReferences,
@@ -328,7 +332,7 @@ function generateFactoryConstructor(
   `
 }
 
-function generateFactoryConstructorParamsAlias(contract: Contract, bytecode: BytecodeWithLinkReferences): string {
+export function generateFactoryConstructorParamsAlias(contract: Contract, bytecode: BytecodeWithLinkReferences): string {
   const name = `${contract.name}ConstructorParams`
 
   if (bytecode.linkReferences) {
