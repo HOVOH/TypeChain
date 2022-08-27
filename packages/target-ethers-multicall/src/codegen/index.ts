@@ -1,5 +1,5 @@
 import {
-  codegenCommonContractFactory,
+  codegenCommonContractFactory as codegenCommonBodyAndHeaders,
   generateContractTypesBody,
   generateFactoryConstructor,
   generateFactoryConstructorParamsAlias, } from '@hovoh/typechain-ethers-v5/dist/codegen'
@@ -21,6 +21,26 @@ import {
   createImportsForUsedIdentifiers,
   createImportTypeDeclaration,
 } from 'typechain'
+
+export function codegenCommonContractFactory(contract: Contract, abi: any){
+  let { body } = codegenCommonBodyAndHeaders(contract, abi);
+  const imports: Set<string> = new Set([contract.name, contract.name + 'Interface', contract.name + 'Multicall'])
+  const contractTypesImportPath = [...Array(contract.path.length + 1).fill('..'), ...contract.path, contract.name].join(
+    '/',
+  )
+  const header = `
+  import type { ${[...imports.values()].join(', ')} } from "${contractTypesImportPath}";
+  import { Contract as MulticallContract} from "@hovoh/ethers-multicall";
+  const _abi = ${JSON.stringify(abi, null, 2)};
+  `.trim()
+
+  body =`
+  ${body}
+    static multicall(address: string): ${contract.name}Multicall {
+      return new MulticallContract(address, _abi) as unknown as ${contract.name}Multicall;
+    }`
+  return {header, body}
+}
 
 export function codegenContractTypings(contract: Contract, codegenConfig: CodegenConfig) {
   const ethersSource = generateContractTypesBody(contract, codegenConfig);
@@ -130,8 +150,8 @@ export function codegenContractFactory(
       return super.connect(signer) as ${contract.name}${FACTORY_POSTFIX};
     }
     ${codegenConfig.discriminateTypes ? `static readonly contractName: '${contract.name}';\n` : ``}
-    ${codegenConfig.discriminateTypes ? `public readonly contractName: '${contract.name}';\n` : ``}
     static readonly bytecode = _bytecode;
+    // common body
     ${body}
   }
 
@@ -159,28 +179,14 @@ export function codegenContractFactory(
 }
 
 export function codegenAbstractContractFactory(contract: Contract, abi: any): string {
-  const { body } = codegenCommonContractFactory(contract, abi);
-  const imports: Set<string> = new Set([contract.name, contract.name + 'Interface', contract.name + 'Multicall'])
-  const contractTypesImportPath = [...Array(contract.path.length + 1).fill('..'), ...contract.path, contract.name].join(
-    '/',
-  )
-  const header = `
-  import type { ${[...imports.values()].join(', ')} } from "${contractTypesImportPath}";
+  const { body, header} = codegenCommonContractFactory(contract, abi);
 
-  const _abi = ${JSON.stringify(abi, null, 2)};
-  `.trim()
   return `
   import type { Provider } from "@ethersproject/providers";
   import { Contract, Signer, utils } from "ethers";
-  import { Contract as MulticallContract} from "@hovoh/ethers-multicall";
   ${header}
-
   export class ${contract.name}${FACTORY_POSTFIX} {
     ${body}
-
-    static multicall(address: string): ${contract.name}Multicall {
-      return new MulticallContract(address, _abi) as unknown as ${contract.name}Multicall;
-    }
   }
   `
 }
