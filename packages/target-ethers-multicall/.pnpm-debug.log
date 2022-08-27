@@ -1,0 +1,32 @@
+{
+  "0 info pnpm": {
+    "message": "Using hooks from: C:\\Users\\micdu\\Code\\defi\\TypeChain\\.pnpmfile.cjs",
+    "prefix": "C:\\Users\\micdu\\Code\\defi\\TypeChain"
+  },
+  "1 info pnpm": {
+    "message": "readPackage hook is declared. Manifests of dependencies might get overridden",
+    "prefix": "C:\\Users\\micdu\\Code\\defi\\TypeChain"
+  },
+  "2 debug pnpm:scope": {
+    "selected": 1,
+    "workspacePrefix": "C:\\Users\\micdu\\Code\\defi\\TypeChain"
+  },
+  "3 info pnpm": {
+    "err": {
+      "name": "Error",
+      "message": "not found: release",
+      "code": "ENOENT",
+      "stack": "Error: not found: release\n    at getNotFoundError (C:\\Users\\micdu\\AppData\\Roaming\\npm\\node_modules\\pnpm\\dist\\pnpm.cjs:41518:51)\n    at Function.whichSync [as sync] (C:\\Users\\micdu\\AppData\\Roaming\\npm\\node_modules\\pnpm\\dist\\pnpm.cjs:41595:13)\n    at getCommandAbsolutePathSync (C:\\Users\\micdu\\AppData\\Roaming\\npm\\node_modules\\pnpm\\dist\\pnpm.cjs:43160:44)\n    at default_1 (C:\\Users\\micdu\\AppData\\Roaming\\npm\\node_modules\\pnpm\\dist\\pnpm.cjs:43169:32)\n    at C:\\Users\\micdu\\AppData\\Roaming\\npm\\node_modules\\pnpm\\dist\\pnpm.cjs:171190:39"
+    }
+  },
+  "4 error pnpm": {
+    "code": "ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL",
+    "prefix": "C:\\Users\\micdu\\Code\\defi\\TypeChain\\packages\\target-ethers-multicall",
+    "err": {
+      "name": "pnpm",
+      "message": "not found: release",
+      "code": "ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL",
+      "stack": "Error: not found: release\n    at getNotFoundError (C:\\Users\\micdu\\AppData\\Roaming\\npm\\node_modules\\pnpm\\dist\\pnpm.cjs:41518:51)\n    at Function.whichSync [as sync] (C:\\Users\\micdu\\AppData\\Roaming\\npm\\node_modules\\pnpm\\dist\\pnpm.cjs:41595:13)\n    at getCommandAbsolutePathSync (C:\\Users\\micdu\\AppData\\Roaming\\npm\\node_modules\\pnpm\\dist\\pnpm.cjs:43160:44)\n    at default_1 (C:\\Users\\micdu\\AppData\\Roaming\\npm\\node_modules\\pnpm\\dist\\pnpm.cjs:43169:32)\n    at C:\\Users\\micdu\\AppData\\Roaming\\npm\\node_modules\\pnpm\\dist\\pnpm.cjs:171190:39"
+    }
+  }
+}
