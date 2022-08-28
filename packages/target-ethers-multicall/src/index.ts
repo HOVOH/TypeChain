@@ -5,6 +5,7 @@ import { BytecodeWithLinkReferences, CodegenConfig, Contract, FileDescription, p
 import { uniqBy } from 'lodash'
 
 import { codegenAbstractContractFactory, codegenContractTypings, codegenContractFactory } from './codegen'
+import { readFileSync } from 'fs'
 
 export default class EthersMulticall extends TypechainEthers {
   override name = 'EthersMulticall'
@@ -31,6 +32,20 @@ export default class EthersMulticall extends TypechainEthers {
         contents: codegenAbstractContractFactory(contract, abi),
       }
     })
+  }
+
+  override afterRun(): FileDescription[] {
+    let allFiles = super.afterRun();
+    allFiles = allFiles.map((file) => {
+      if (file.path.includes("common.ts")){
+        return ({
+          path: join(this.outDirAbs, 'common.ts'),
+            contents: readFileSync(join(__dirname, '../static/common.ts'), 'utf-8'),
+        })
+      }
+      return file;
+    })
+    return allFiles;
   }
 
 }
