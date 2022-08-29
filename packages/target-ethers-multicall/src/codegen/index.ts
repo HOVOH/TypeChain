@@ -30,7 +30,7 @@ export function codegenCommonContractFactory(contract: Contract, abi: any){
   )
   const header = `
   import type { ${[...imports.values()].join(', ')} } from "${contractTypesImportPath}";
-  import { Contract as MulticallContract} from "ethcall";
+  import { Contract as MulticallContract} from "@hovoh/ethcall";
   const _abi = ${JSON.stringify(abi, null, 2)};
   `.trim()
 
@@ -94,11 +94,12 @@ export function codegenContractTypings(contract: Contract, codegenConfig: Codege
         ],
         'type @ethersproject/abi': ['Fragment', 'FunctionFragment', 'Result', 'EventFragment', 'JsonFragmentType'],
         'type @ethersproject/providers': ['Listener', 'Provider'],
+        'type @hovoh/ethcall': ["Call"]
       },
       source,
     ) +
     '\n' +
-    createImportTypeDeclaration([...EVENT_IMPORTS, "Call"], commonPath)
+    createImportTypeDeclaration([...EVENT_IMPORTS], commonPath)
 
   return imports + source;
 }
