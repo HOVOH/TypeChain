@@ -20,7 +20,7 @@ describe("Multicall typed contract", function() {
       uniContract.symbol()
     ]);
 
-    expect(yfiSupply.toString()).toEqual( '36666000000000000000000');
+    expect(yfiSupply._isBigNumber).toEqual( true);
     expect(uniSymbol).toEqual('UNI');
 
   })
