@@ -23,7 +23,7 @@
     "@ethersproject/abi": "^5.0.0",
     "@ethersproject/bytes": "^5.0.0",
     "@ethersproject/providers": "^5.0.0",
-    "ethcall": "^4.8.2",
+    "@hovoh/ethcall": "^9.9.4",
     "ethers": "^5.1.3"
   }
 }

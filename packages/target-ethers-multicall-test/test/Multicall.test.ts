@@ -1,11 +1,8 @@
 import {InfuraProvider} from '@ethersproject/providers';
-import { Provider } from 'ethcall'
-
+import {initMulticallProvider} from "@hovoh/ethcall";
 import { expect } from 'earljs'
 
 import { SimpleToken__factory } from '../types/factories/v0.8.9'
-import { initMulticallProvider } from '../types/common'
-import { BigNumber } from 'ethers'
 const provider = new InfuraProvider('mainnet');
 
 
