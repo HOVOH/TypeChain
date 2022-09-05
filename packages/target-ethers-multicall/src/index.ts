@@ -34,20 +34,6 @@ export default class EthersMulticall extends TypechainEthers {
     })
   }
 
-  override afterRun(): FileDescription[] {
-    let allFiles = super.afterRun();
-    allFiles = allFiles.map((file) => {
-      if (file.path.includes("common.ts")){
-        return ({
-          path: join(this.outDirAbs, 'common.ts'),
-            contents: readFileSync(join(__dirname, '../static/common.ts'), 'utf-8'),
-        })
-      }
-      return file;
-    })
-    return allFiles;
-  }
-
 }
 
 function createRootIndexContent(rootIndexes: FileDescription[], paths: string[]) {
